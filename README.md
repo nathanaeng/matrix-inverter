@@ -8,7 +8,7 @@ Given a matrix A, possible matrix operations include transpose(A) and inverse(A)
 Methods of the matrix object:
 --
 
-clean_str(): prints a visual representation of the matrix with better spacing
+formatted(): returns a visual representation of the matrix with better spacing
 
 get_det(): returns the determinant of the matrix
 

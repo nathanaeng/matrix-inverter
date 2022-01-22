@@ -19,7 +19,7 @@ class Matrix():
     def __str__(self) -> str:
         return f'{self.data}'
 
-    def clean_str(self) -> str:
+    def formatted(self) -> str:
         '''returns a better visual representation of the matrix'''
         x = ''
         for m in range(len(self.data)):
@@ -142,8 +142,8 @@ if __name__ == "__main__":
             x[i] = int(x[i])
         m.append(x)
     a = Matrix(m)
-    print(f"\nYour matrix is:\n\n{a.clean_str()}\n")
+    print(f"\nYour matrix is:\n\n{a.formatted()}\n")
     if a.has_inverse():
-        print(f"Inverse:\n{a.get_inverse().clean_str()}\n")
+        print(f"Inverse:\n{a.get_inverse().formatted()}\n")
     else:
         print(f"Matrix is not invertible.\n")
