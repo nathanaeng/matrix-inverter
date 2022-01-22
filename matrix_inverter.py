@@ -1,4 +1,24 @@
-### give the inverse of a matrix if it is invertible
+'''
+Matrix Class
+
+Attributes
+--------------
+data: [[],[],[],[],...]
+getDet: for calculation purposes, does not need to be supplied when creating a new matrix
+size: [m, n] representation of m x n matrix
+
+Methods
+--------------
+formatted(): returns a string containing a visual representation of the matrix with better spacing
+
+get_det(): returns the determinant of the matrix; optional arguments do not need to be supplied when calling this method
+
+has_inverse(): returns True if the matrix has an inverse and False otherwise
+
+transpose(): returns a new matrix which is the transpose of the 'self' matrix
+
+get_inverse(): returns a new matrix representing the inverse of the 'self' matrix, throws an error if 'self' is not invertible
+'''
 class Matrix():
     
     def __init__(self, data, getDet = False) -> None:
@@ -31,8 +51,8 @@ class Matrix():
 
     def get_det(self, m=None, row=1, adj=False) -> int:
         '''
-        return the determinant of self, if m is defined then
-        return the determinant of m
+        returns the determinant of self, if m is defined then
+        returns the determinant of m
         
         expand across row 1 by default
         
@@ -45,6 +65,15 @@ class Matrix():
         det = 0
         subs = []
 
+        # check for 0 x 0 matrix
+        if len(m.data) == 1 and len(m.data[0]) == 0:
+            return 0
+
+        # check for 1 x 1 matrix
+        if len(m.data) == 1 and len(m.data[0]) == 1:
+            return m.data[0][0]
+
+        # base case
         if len(m.data) == 2 and len(m.data[0]) == 2:
             '''
             [00][01]
@@ -73,7 +102,10 @@ class Matrix():
 
     def has_inverse(self) -> bool:
         '''check if matrix is invertible'''
-        if len(self.data)!=len(self.data[0]):
+        # inverse of 0 x 0 matrix is itself
+        if len(self.data) == 1 and len(self.data[0]) == 0:
+            return True
+        elif len(self.data)!=len(self.data[0]):
             # Not a square matrix, so not invertible
             return False
 
@@ -85,7 +117,9 @@ class Matrix():
             return True
 
     def transpose(self) -> "Matrix":
-        '''returns the transposed matrix'''
+        '''returns a new transposed matrix'''
+        if len(self.data) == 1 and len(self.data[0]) == 0:
+            return Matrix([[]])
         new = []
         for idx in range(len(self.data)):
             temp = []
@@ -97,7 +131,7 @@ class Matrix():
 
     def get_inverse(self) -> "Matrix":
         '''
-        return a new matrix which is the inverse of self
+        returns a new inverse matrix
         
         calculates the cofactor matrix using Cramer's rule, then
         multiplies each value in the cofactor matrix by the reciprocal
@@ -110,6 +144,17 @@ class Matrix():
         https://en.wikipedia.org/wiki/Minor_(linear_algebra)
         https://www.mathsisfun.com/algebra/matrix-inverse-minors-cofactors-adjugate.html
         '''
+        if not self.has_inverse():
+            raise Exception("Matrix is not invertible.")
+
+        # check for 0 x 0 matrix
+        if len(self.data) == 1 and len(self.data[0]) == 0:
+            return Matrix([[]])
+
+        # check for 1 x 1 matrix
+        if len(self.data) == 1 and len(self.data[0]) == 1:
+            return Matrix([[1 / self.data[0][0]]])
+
         m_cofactors = []
         det = self.get_det()
         for m in range(len(self.data)):
@@ -134,14 +179,17 @@ if __name__ == "__main__":
     while(x != 'D' and x != 'd'):
         temp.append(x)
         x = input()
-    
-    m = []
-    for s in temp:
-        x = s.replace(',', ' ').replace('  ', ' ').split(' ')  # make: (1,1,1), (1 1 1), (1, 1, 1), (1,1 1), ... readable
-        for i in range(len(x)):
-            x[i] = int(x[i])
-        m.append(x)
-    a = Matrix(m)
+
+    if len(temp) == 0:
+        a = Matrix([[]])
+    else:
+        m = []
+        for s in temp:
+            x = s.replace(',', ' ').replace('  ', ' ').split(' ')  # make: (1,1,1), (1 1 1), (1, 1, 1), (1,1 1), ... readable
+            for i in range(len(x)):
+                x[i] = int(x[i])
+            m.append(x)
+        a = Matrix(m)
     print(f"\nYour matrix is:\n\n{a.formatted()}\n")
     if a.has_inverse():
         print(f"Inverse:\n{a.get_inverse().formatted()}\n")
